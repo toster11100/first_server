@@ -8,16 +8,28 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func Upper(w http.ResponseWriter, r *http.Request) {
+func (h *Handel) Upper(w http.ResponseWriter, r *http.Request) {
+	logrus.Info("Upper")
 	s := r.URL.Query().Get("s")
-	str := r.URL.Query().Get("string")
-	switch {
-	case s != "":
-		fmt.Fprintln(w, strings.ToUpper(s))
-	case str != "":
-		fmt.Fprintln(w, strings.ToUpper(str))
-	default:
+	if s == "" {
+		s = r.URL.Query().Get("string")
+	}
+	if s == "" {
 		http.Error(w, "400 bad request", 400)
 		logrus.Errorln("func upper argument is invalid")
+		return
 	}
+	fmt.Fprint(w, strings.ToUpper(s))
 }
+
+//{
+//switch {
+//case s != "":
+//fmt.Fprintln(w, strings.ToUpper(s))
+//case str != "":
+//fmt.Fprintln(w, strings.ToUpper(str))
+//default:
+//http.Error(w, "400 bad request", 400)
+//logrus.Errorln("func upper argument is invalid")
+//}
+//}

@@ -11,21 +11,30 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func Random(w http.ResponseWriter, r *http.Request) {
+func (h *Handel) Random(w http.ResponseWriter, r *http.Request) {
 	var minrand, maxrand int64
 
 	min := r.URL.Query().Get("min")
 	max := r.URL.Query().Get("max")
 
+	var err error
 	if min == "" {
 		minrand = 0
 	} else {
-		minrand, _ = strconv.ParseInt(min, 10, 64)
+		minrand, err = strconv.ParseInt(min, 10, 64)
+		if err != nil {
+			http.Error(w, err.Error(), 400)
+			return
+		}
 	}
 	if max == "" {
 		maxrand = math.MaxInt64
 	} else {
-		maxrand, _ = strconv.ParseInt(max, 10, 64)
+		maxrand, err = strconv.ParseInt(max, 10, 64)
+		if err != nil {
+			http.Error(w, err.Error(), 400)
+			return
+		}
 	}
 
 	if minrand < 0 || maxrand < 0 || minrand >= maxrand {

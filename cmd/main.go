@@ -11,9 +11,12 @@ import (
 
 func main() {
 	flags := flags.New()
+	db := 0
+	h := handel.New(db)
 
-	http.HandleFunc("/random", handel.Random)
-	http.HandleFunc("/upper", handel.Upper)
+	http.HandleFunc("/random", h.Random)
+	http.HandleFunc("/upper", h.Upper)
 
+	logrus.Info("Starting server")
 	logrus.Fatal(http.ListenAndServe(*flags.Port, nil))
 }

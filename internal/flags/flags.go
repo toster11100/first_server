@@ -5,14 +5,19 @@ import (
 )
 
 type Flags struct {
-	Port *string
+	flagset pflag.FlagSet
+	Port    *string
 }
 
 func New() Flags {
 	flags := Flags{}
 
-	flags.Port = pflag.StringP("port", "p", ":8080", "port")
-	pflag.Parse()
+	flags.flagset = *pflag.NewFlagSet("main", pflag.ExitOnError)
+	flags.Port = flags.flagset.StringP("port", "p", ":8080", "port")
 
 	return flags
+}
+
+func (f *Flags) Parse(args []string) error {
+	return f.flagset.Parse(args)
 }
